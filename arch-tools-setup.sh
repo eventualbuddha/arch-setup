@@ -118,7 +118,25 @@ EOF
 }
 
 # ---------------------------------------------------------------------------
-# 5. Optionally change the default shell to fish
+# 5. Browsers
+# ---------------------------------------------------------------------------
+install_browsers() {
+    # helium-browser-bin is in the CachyOS repo
+    sudo pacman -S --needed --noconfirm helium-browser-bin
+
+    xdg-settings set default-web-browser helium.desktop
+    echo "Default browser set to Helium."
+}
+
+# ---------------------------------------------------------------------------
+# 6. 1Password (app + CLI) — AUR
+# ---------------------------------------------------------------------------
+install_1password() {
+    aur_install 1password 1password-cli
+}
+
+# ---------------------------------------------------------------------------
+# 7. Optionally change the default shell to fish
 # ---------------------------------------------------------------------------
 set_default_shell() {
     local fish_path
@@ -145,6 +163,8 @@ set_default_shell() {
 install_aur_helper
 install_rust
 install_cli_tools
+install_browsers
+install_1password
 install_mise
 configure_fish
 set_default_shell

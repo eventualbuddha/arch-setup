@@ -15,7 +15,7 @@ run_optional() {
     echo ""
 }
 
-run arch-cli-tools-setup.sh
+run arch-tools-setup.sh
 run arch-neovim-setup.sh
 run arch-git-config.sh
 run arch-fido-pam-setup.sh
