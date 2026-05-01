@@ -66,26 +66,42 @@ install_cli_tools() {
 }
 
 # ---------------------------------------------------------------------------
-# 3. Fish config — alias cat → bat
+# 3. Fish config
 # ---------------------------------------------------------------------------
 configure_fish() {
     local fish_conf_dir="$HOME/.config/fish/conf.d"
-    local alias_file="$fish_conf_dir/bat-alias.fish"
-
     mkdir -p "$fish_conf_dir"
 
-    if [[ -f "$alias_file" ]] && grep -qF 'alias cat bat' "$alias_file" 2>/dev/null; then
-        echo "Fish bat alias already configured, skipping."
-        return 0
+    # Source distro-provided fish config if present (e.g. CachyOS)
+    local cachyos_config="/usr/share/cachyos-fish-config/cachyos-config.fish"
+    local distro_file="$fish_conf_dir/00-distro.fish"
+    if [[ -f "$cachyos_config" ]] && ! grep -qF "$cachyos_config" "$distro_file" 2>/dev/null; then
+        cat > "$distro_file" <<EOF
+source $cachyos_config
+EOF
+        echo "Distro fish config sourced via $distro_file"
     fi
 
-    cat > "$alias_file" <<'EOF'
-# Use bat as a drop-in cat replacement
+    # Suppress the greeting (distro configs often set one)
+    local greeting_file="$fish_conf_dir/greeting.fish"
+    if [[ ! -f "$greeting_file" ]]; then
+        cat > "$greeting_file" <<'EOF'
+function fish_greeting
+end
+EOF
+        echo "Empty fish greeting written to $greeting_file"
+    fi
+
+    # cat → bat alias
+    local alias_file="$fish_conf_dir/bat-alias.fish"
+    if ! grep -qF 'alias cat bat' "$alias_file" 2>/dev/null; then
+        cat > "$alias_file" <<'EOF'
 if command -q bat
     alias cat bat
 end
 EOF
-    echo "Fish alias 'cat → bat' written to $alias_file"
+        echo "Fish alias 'cat → bat' written to $alias_file"
+    fi
 }
 
 # ---------------------------------------------------------------------------
@@ -133,6 +149,17 @@ install_browsers() {
 # ---------------------------------------------------------------------------
 install_1password() {
     aur_install 1password 1password-cli
+
+    local op_file="$HOME/.config/fish/conf.d/1password.fish"
+    if [[ ! -f "$op_file" ]]; then
+        mkdir -p "$(dirname "$op_file")"
+        cat > "$op_file" <<'EOF'
+if test -f ~/.config/op/plugins.sh
+    source ~/.config/op/plugins.sh
+end
+EOF
+        echo "1Password fish plugin written to $op_file"
+    fi
 }
 
 # ---------------------------------------------------------------------------
