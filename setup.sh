@@ -15,10 +15,11 @@ run_optional() {
     echo ""
 }
 
-run arch-tools-setup.sh
-run arch-neovim-setup.sh
-run arch-git-config.sh
-run arch-fido-pam-setup.sh
-run_optional arch-virt-manager-setup.sh
+run tools-setup.sh
+run neovim-setup.sh
+run git-config.sh
+run fido-pam-setup.sh
+run_optional virt-manager-setup.sh
+run_optional desktop-environment.sh
 
 echo "All done."
