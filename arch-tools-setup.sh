@@ -63,6 +63,9 @@ install_cli_tools() {
     sudo pacman -S --needed --noconfirm lazygit
 
     sudo pacman -S --needed --noconfirm uv
+
+    # starship: official repos
+    sudo pacman -S --needed --noconfirm starship
 }
 
 # ---------------------------------------------------------------------------
@@ -90,6 +93,17 @@ function fish_greeting
 end
 EOF
         echo "Empty fish greeting written to $greeting_file"
+    fi
+
+    # starship prompt
+    local starship_file="$fish_conf_dir/starship.fish"
+    if [[ ! -f "$starship_file" ]]; then
+        cat > "$starship_file" <<'EOF'
+if command -q starship
+    starship init fish | source
+end
+EOF
+        echo "Starship fish integration written to $starship_file"
     fi
 
     # cat → bat alias
